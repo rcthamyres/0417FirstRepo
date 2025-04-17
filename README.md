@@ -7,6 +7,7 @@ TaskTracker is a simple and lightweight task management tool that helps users cr
 
 - I love this city: [Rio de Janeiro](https://pt.wikipedia.org/wiki/Rio_de_Janeiro)
 - This is my work from [Infographic assignment](Infographic-Graphs.html)
+- This is the [link](blog.md) to my latest blog
 
 ## Usage:
 
