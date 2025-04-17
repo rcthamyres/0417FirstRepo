@@ -1,0 +1,218 @@
+---
+title: "Infographic Graphs"
+author: "Thamyres Costa"
+date: "2025-04-08"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(socviz)
+library(dplyr)
+setwd("~/Documents/uw-madison/J677")
+Health_stat<-read_csv("Global Health Statistics.csv")
+```
+
+## Graph 1 - Cancer
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA")  %>% group_by(Year) %>% summarise(avg_treatment_cost = mean(`Average Treatment Cost (USD)`, na.rm = TRUE)) %>% ggplot(aes(x = Year, y = avg_treatment_cost)) + geom_line(color="purple") + geom_point() + labs(x = "Year", y = "Average Treatment Cost (USD)", title = "Average Cancer Treatment Cost in the USA Over the Years")+ geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash",linewidth=.6)+
+theme(text = element_text(family="Helvetica"), 
+      panel.grid.major= element_line(color="grey", linetype="dotted"), 
+      panel.grid.minor = element_blank(), 
+      panel.grid = element_blank(),
+      panel.background = element_rect("white"), 
+      plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+      axis.title = element_text(face="bold"),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise(`Average Treatment Cost (USD)` = mean(`Average Treatment Cost (USD)`, na.rm = TRUE),`Recovery Rate (%)` = mean(`Recovery Rate (%)`, na.rm = TRUE)) %>%pivot_longer(cols = c(`Average Treatment Cost (USD)`, `Recovery Rate (%)`),names_to = "Metric", values_to = "Value") %>% ggplot(aes(x = Year, y = Value)) + geom_line(color="purple") + geom_point() + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash",linewidth=.6) + facet_wrap(~ Metric, scales = "free_y", ncol = 1) + labs(title = "Comparison Between Average Treatment Cost and Recovery Rate",x = "Year",y = NULL) + 
+  theme(text = element_text(family="Helvetica"), 
+      panel.grid.major= element_line(color="grey", linetype="dotted"), 
+      panel.grid.minor = element_blank(), 
+      panel.grid = element_blank(),
+      panel.background = element_rect("white"), 
+      plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+      axis.title = element_text(face="bold"),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)),
+      strip.text = element_text(face = "bold",size=10),
+      strip.background = element_blank())
+```
+
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise(`Recovery Rate (%)` = mean(`Recovery Rate (%)`, na.rm = TRUE),`Per Capita Income (USD)` = mean(`Per Capita Income (USD)`, na.rm = TRUE)) %>% pivot_longer(cols = c(`Recovery Rate (%)`, `Per Capita Income (USD)`), names_to = "Metric", values_to = "Value") %>% ggplot(aes(x = Year, y = Value)) + geom_line(color="purple") + geom_point(size=1) + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash") + facet_wrap(~ Metric, scales = "free_y", ncol = 1) + labs(title = "Relationship Between Recovery Rate and Income",x = "Year",y = NULL) +
+  theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        strip.text = element_text(face = "bold",size=10),
+        strip.background = element_blank(),
+        panel.spacing = unit(1.5, "lines"))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year, `Age Group`) %>% summarise(avg_recovery = mean(`Recovery Rate (%)`, na.rm = TRUE)) %>% ggplot(aes(x = Year, y = avg_recovery)) + geom_line(color="purple") + geom_point(size=.6) + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash") + facet_wrap(~ `Age Group`) + labs(title = "How Recovery Rate Varies by Age Group",x = "Year",y = "Average Recovery Rate (%)") +
+  theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        strip.text = element_text(face = "bold",size=10),
+        strip.background = element_blank(),
+        panel.spacing = unit(1.5, "lines"))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year, Gender) %>% summarise(avg_recovery = mean(`Recovery Rate (%)`, na.rm = TRUE)) %>% ggplot(aes(x = Year, y = avg_recovery)) + geom_line(color="purple") + geom_point(size=.4) + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash") + facet_wrap(~ Gender) + labs(title = "How Recovery Rate Varies by Gender", x = "Year", y = "Average Recovery Rate (%)") +
+  theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        strip.text = element_text(face = "bold",size=10),
+        strip.background = element_blank(),
+        panel.spacing = unit(1.5, "lines"))
+```
+
+
+# Alternative graphs
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise(`Healthcare Access (%)` = mean(`Healthcare Access (%)`, na.rm = TRUE),
+            `Mortality Rate (%)` = mean(`Mortality Rate (%)`, na.rm = TRUE)) %>%
+  ggplot(aes(x = `Healthcare Access (%)`, y = `Mortality Rate (%)`)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed", color = "goldenrod") +
+  labs(title = "Healthcare Access vs Cancer Mortality",
+       x = "Healthcare Access (%)",
+       y = "Mortality Rate (%)") +
+theme(text = element_text(family="Helvetica"), 
+      panel.grid.major= element_line(color="grey", linetype="dotted"), 
+      panel.grid.minor = element_blank(), 
+      panel.grid = element_blank(),
+      panel.background = element_rect("white"), 
+      plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+      axis.title = element_text(face="bold"),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise(avg_income = mean(`Per Capita Income (USD)`, na.rm = TRUE),avg_education = mean(`Education Index`, na.rm = TRUE)) %>% ggplot(aes(x = avg_education, y = avg_income)) + geom_line(color = "purple") + geom_point() + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash",linewidth=.6) + labs(title = "How the Education Index Relates to Income in the USA",x = "Average Education Index",y = "Average Per Capita Income (USD)") +
+  theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise(avg_income = mean(`Per Capita Income (USD)`, na.rm = TRUE), avg_recovery = mean(`Recovery Rate (%)`, na.rm = TRUE)) %>% ggplot(aes(x = avg_income, y = avg_recovery)) + geom_line(color = "purple") + geom_point() + labs(title = "Relationship Between Per Capita Income and Recovery Rate",x = "Average Per Capita Income (USD)",y = "Average Recovery Rate (%)") + geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash",linewidth=.6)+
+  theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+```{r}
+Health_stat %>% filter(`Disease Name` == "Cancer", Country == "USA") %>% group_by(Year) %>% summarise( `Per Capita Income (USD)` = mean(`Per Capita Income (USD)`, na.rm = TRUE),
+    `Healthcare Access (%)` = mean(`Healthcare Access (%)`, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = `Per Capita Income (USD)`, y = `Healthcare Access (%)`)) +
+  geom_point(color = "purple", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash", linewidth = 0.6) +
+  labs(
+    title = "Healthcare Access in Relation to Per Capita Income in the USA",
+    x = "Per Capita Income (USD)",
+    y = "Healthcare Access (%)")+
+theme(text = element_text(family="Helvetica"), 
+      panel.grid.major= element_line(color="grey", linetype="dotted"), 
+      panel.grid.minor = element_blank(), 
+      panel.grid = element_blank(),
+      panel.background = element_rect("white"), 
+      plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+      axis.title = element_text(face="bold"),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)))
+```
+
+```{r}
+Health_stat %>%
+  filter(`Disease Name` == "Cancer", Country == "USA") %>%
+  group_by(Year, Gender) %>%
+  summarise(avg_recovery = mean(`Recovery Rate (%)`, na.rm = TRUE)) %>%
+  ggplot(aes(x = Year, y = avg_recovery)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, color = "goldenrod", linetype = "longdash") +
+  facet_wrap(~ Gender) +
+  labs(
+    title = "Recovery Rate Trends by Gender",
+    x = "Year",
+    y = "Average Recovery Rate (%)"
+  ) +
+    theme(text = element_text(family="Helvetica"), 
+      panel.grid.major= element_line(color="grey", linetype="dotted"), 
+      panel.grid.minor = element_blank(), 
+      panel.grid = element_blank(),
+      panel.background = element_rect("white"), 
+      plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+      axis.title = element_text(face="bold"),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)),
+      strip.text = element_text(face = "bold",size=10),
+      strip.background = element_blank(),
+    panel.spacing = unit(1.5, "lines")
+  )
+```
+
+# Final
+```{r}
+Health_stat %>% filter(Country == "USA") %>% group_by(Year) %>% summarise(`Prevalence Rate (%)` = mean(`Prevalence Rate (%)`, na.rm = TRUE),
+    `Urbanization Rate (%)` = mean(`Urbanization Rate (%)`, na.rm = TRUE)
+  ) %>% ggplot(aes(x = `Urbanization Rate (%)`, y = `Prevalence Rate (%)`)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", se = FALSE, color = "goldenrod") +
+  labs(
+    title = "Prevalence vs. Urbanization in the USA",
+    x = "Urbanization Rate (%)",
+    y = "Prevalence Rate (%)",
+    caption = "Source: Global Health Statistics"
+  )+
+    theme(text = element_text(family="Helvetica"), 
+        panel.grid.major= element_line(color="grey", linetype="dotted"), 
+        panel.grid.minor = element_blank(), 
+        panel.grid = element_blank(),
+        panel.background = element_rect("white"), 
+        plot.title= element_text(face="bold", hjust = 0.5,margin = margin(b = 12)),
+        axis.title = element_text(face="bold"),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)))
+```
+
